@@ -1,8 +1,9 @@
 <template>
   <div>
     <header>
-      <router-link to="/">Перейти к Foo</router-link>
-      <router-link to="/select">Перейти к Bar</router-link>
+      <router-link to="/">Data</router-link>
+      <router-link to="/select">Select</router-link>
+      <!-- <div @click="stop">Остановить</div> -->
     </header>
     <router-view></router-view>
   </div>
@@ -15,10 +16,17 @@ export default {
       msg: "hi",
     };
   },
+
+  methods: {
+    stop() {},
+  },
 };
 </script>
 
 <style lang="scss">
+* {
+  box-sizing: border-box;
+}
 .basic {
   border: 1px solid grey;
 
