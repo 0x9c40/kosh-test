@@ -47,7 +47,7 @@ export default new Vuex.Store({
       };
       setTimeout(() => {
         binance_ws.close();
-      }, 5000);
+      }, 8000);
     },
 
     // binance_ws_disconnect

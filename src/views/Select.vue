@@ -38,7 +38,7 @@ export default {
 <style lang="scss">
 .box {
   select {
-    background-color: #0563af;
+    background-color: var(--color-primary);
     color: white;
     padding: 12px;
     width: 250px;

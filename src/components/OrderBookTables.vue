@@ -9,8 +9,8 @@
       </div>
       <div class="row" v-for="(bid, index) in bids" :key="index">
         <div class="cell">{{ bid[1] }}</div>
-        <div class="cell">{{ bid[0] }}</div>
-        <div class="cell">{{ bid[0] * bid[1] }}</div>
+        <div class="cell">{{ Number(bid[0]).toFixed(2) }}</div>
+        <div class="cell">{{ Number(bid[0] * bid[1]).toFixed(2) }}</div>
       </div>
     </div>
   </div>
@@ -46,21 +46,23 @@ export default {
 <style lang="scss">
 .table-head {
   display: flex;
-  background-color: lighten(#0563af, 50%);
+  background-color: var(--color-secondary);
   color: white;
   justify-content: center;
-  border: 1px solid #0563af;
+  border: 1px solid var(--color-primary);
 }
 .table {
   width: 480px;
+  height: calc(100vh - var(--header-height));
+  overflow-y: scroll;
 }
 .row {
   display: flex;
 }
 .cell {
   width: 160px;
-  border: 1px solid #0563af;
-  color: #0563af;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
   display: flex;
   padding-left: 24px;
   align-items: center;
