@@ -6,6 +6,9 @@ import App from "./App.vue";
 
 import store from "./store";
 import router from "./router";
+import BinanceSDK from "./plugins/BinanceSDK";
+
+Vue.use(BinanceSDK);
 
 const mounting_point = document.createElement("div");
 mounting_point.id = "app";

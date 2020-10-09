@@ -8,11 +8,21 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   plugins: [createPersistedState()],
 
-  state: {},
+  state: {
+    selected_symbol: "BTCUSDT",
+  },
 
-  mutations: {},
+  mutations: {
+    select_symbol(state, symbol) {
+      state.selected_symbol = symbol;
+    },
+  },
 
-  actions: {},
+  actions: {
+    select_symbol({ commit }, symbol) {
+      commit("select_symbol", symbol);
+    },
+  },
 
   modules: {},
 });

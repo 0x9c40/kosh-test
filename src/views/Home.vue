@@ -1,12 +1,18 @@
 <template>
-  <div>{{ msg }}</div>
+  <div>
+    <OrderBookTables />
+  </div>
 </template>
 
 <script>
+import OrderBookTables from "../components/OrderBookTables.vue";
+
 export default {
   name: "Home",
 
-  components: {},
+  components: {
+    OrderBookTables,
+  },
 
   data() {
     return {
