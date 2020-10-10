@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="header">
-      <div class="selected-symbol">{{ selected_symbol }}</div>
+      <div class="selected-symbol">{{ active_symbol }}</div>
       <router-link to="/" class="header-button">Data</router-link>
       <router-link to="/select" class="header-button">Select</router-link>
       <!-- <div @click="stop">Остановить</div> -->
@@ -24,7 +24,7 @@ export default {
 
   computed: {
     ...mapState({
-      selected_symbol: (state) => state.selected_symbol,
+      active_symbol: (state) => state.active_symbol,
     }),
   },
 

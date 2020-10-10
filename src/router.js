@@ -6,8 +6,8 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: () => import(/* webpackChunkName: "home" */ "./views/Home.vue"),
+    name: "OrderBook",
+    component: () => import(/* webpackChunkName: "order_book" */ "./views/OrderBook.vue"),
   },
   {
     path: "/select",

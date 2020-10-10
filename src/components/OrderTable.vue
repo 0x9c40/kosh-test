@@ -1,31 +1,33 @@
 <template>
-  <div class="orders-table">
+  <div class="order-table">
     <div>
-      <div class="orders-table__head">{{ name }}</div>
-      <div class="orders-table__column-names">
-        <div class="orders-table__cell">Amount</div>
-        <div class="orders-table__cell">Price</div>
-        <div class="orders-table__cell">Total</div>
+      <div class="order-table__head">{{ name }}</div>
+      <div class="order-table__column-names">
+        <div class="order-table__cell">Amount</div>
+        <div class="order-table__cell">Price</div>
+        <div class="order-table__cell">Total</div>
       </div>
     </div>
-    <div class="orders-table__content">
-      <div v-for="(order, index) in orders" :key="index" class="orders-table__row">
-        <div class="orders-table__cell">{{ order[1] }}</div>
-        <div class="orders-table__cell">{{ Number(order[0]).toFixed(2) }}</div>
-        <div class="orders-table__cell">{{ Number(order[0] * order[1]).toFixed(4) }}</div>
+    <div class="order-table__content">
+      <div v-for="(order, index) in orders" :key="index" class="order-table__row">
+        <div class="order-table__cell">{{ order[1] }}</div>
+        <div class="order-table__cell">{{ Number(order[0]).toFixed(2) }}</div>
+        <div class="order-table__cell">{{ Number(order[0] * order[1]).toFixed(4) }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapMutations, mapActions } from "vuex";
+
 import { scrollbarWidth } from "@xobotyi/scrollbar-width";
 
 let root = document.documentElement;
 root.style.setProperty("--scroll-width", `${scrollbarWidth()}px`);
 
 export default {
-  name: "OrdersTable",
+  name: "OrderTable",
 
   props: {
     orders: Array,
@@ -39,16 +41,16 @@ export default {
 </script>
 
 <style lang="scss">
-.orders-table {
+.order-table {
   width: 100%;
   max-width: 480px;
   border: 1px solid var(--color-primary);
 
   &:hover {
-    .orders-table__content {
+    .order-table__content {
       overflow-y: scroll;
     }
-    .orders-table__column-names {
+    .order-table__column-names {
       padding-right: var(--scroll-width);
     }
   }
@@ -72,7 +74,7 @@ export default {
 
   &__content {
     overflow-y: hidden;
-    height: calc(100vh - var(--header-height) - 48px);
+    height: calc(100vh - var(--header-height) - 48px - 2px);
   }
 
   &__row {

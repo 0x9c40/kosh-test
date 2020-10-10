@@ -22,11 +22,11 @@ export default {
   },
 
   computed: {
-    ...mapState({ selected_symbol: (state) => state.selected_symbol }),
+    ...mapState({ active_symbol: (state) => state.active_symbol }),
   },
 
   created() {
-    this.selected = this.selected_symbol;
+    this.selected = this.active_symbol;
   },
 
   methods: {
