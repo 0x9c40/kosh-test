@@ -3,6 +3,30 @@
     <select v-model="selected" @change="select_symbol(selected)" class="select-box">
       <option v-for="symbol in symbols" :key="symbol">{{ symbol }}</option>
     </select>
+    <ul class="diff-list">
+      <li v-for="(diff, index) in diffs" :key="index" class="diff-list-item">
+        <div class="diff-prop">
+          <div class="diff-prop__name">Symbol:</div>
+          <div class="diff-prop__value">{{ diff.s }}</div>
+        </div>
+        <div class="diff-prop">
+          <div class="diff-prop__name">First uID:</div>
+          <div class="diff-prop__value">{{ diff.U }}</div>
+        </div>
+        <div class="diff-prop">
+          <div class="diff-prop__name">Last uID:</div>
+          <div class="diff-prop__value">{{ diff.u }}</div>
+        </div>
+        <div class="diff-prop">
+          <div class="diff-prop__name">Bids:</div>
+          <div class="diff-prop__value">{{ diff.b.length }}</div>
+        </div>
+        <div class="diff-prop">
+          <div class="diff-prop__name">Asks:</div>
+          <div class="diff-prop__value">{{ diff.a.length }}</div>
+        </div>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -22,7 +46,10 @@ export default {
   },
 
   computed: {
-    ...mapState({ active_symbol: (state) => state.active_symbol }),
+    ...mapState({
+      active_symbol: (state) => state.active_symbol,
+      diffs: (state) => state.diffs,
+    }),
   },
 
   created() {
@@ -52,5 +79,23 @@ export default {
   option {
     padding: 30px;
   }
+}
+
+.diff-list {
+  padding: 0;
+  list-style: none;
+}
+
+.diff-list-item {
+  display: flex;
+  margin-bottom: 12px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+  }
+}
+
+.diff-prop {
+  padding-right: 20px;
 }
 </style>

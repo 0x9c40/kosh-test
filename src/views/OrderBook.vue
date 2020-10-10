@@ -2,13 +2,12 @@
   <div class="order-book-view">
     <OrderTable :orders="bids" name="Bids" />
     <OrderTable :orders="asks" name="Asks" />
-    <div @click="binance_ws.close()" class="close">stop</div>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
-import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import OrderTable from "../components/OrderTable.vue";
 
 export default {
@@ -41,8 +40,10 @@ export default {
 
       this.binance_ws = Vue.binance_make_ws(this.stream_name);
 
-      this.binance_ws.onmessage = ({ data }) => {
-        let { b: bids, a: asks } = JSON.parse(data);
+      this.binance_ws.onmessage = ({ data: data_string }) => {
+        let data = JSON.parse(data_string);
+        this.add_diff(data);
+        let { b: bids, a: asks } = data;
         bids = bids.filter((bid) => +bid[1] !== 0);
         asks = asks.filter((ask) => +ask[1] !== 0);
         this.bids.unshift(...bids);
@@ -58,13 +59,19 @@ export default {
 
     this.binance_ws = Vue.binance_make_ws(this.stream_name);
 
-    this.binance_ws.onmessage = ({ data }) => {
-      let { b: bids, a: asks } = JSON.parse(data);
+    this.binance_ws.onmessage = ({ data: data_string }) => {
+      let data = JSON.parse(data_string);
+      this.add_diff(data);
+      let { b: bids, a: asks } = data;
       bids = bids.filter((bid) => +bid[1] !== 0);
       asks = asks.filter((ask) => +ask[1] !== 0);
       this.bids.unshift(...bids);
       this.asks.unshift(...asks);
     };
+  },
+
+  methods: {
+    ...mapActions(["add_diff"]),
   },
 };
 </script>

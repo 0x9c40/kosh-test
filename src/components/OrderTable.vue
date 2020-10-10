@@ -40,7 +40,7 @@ export default {
 
   methods: {
     total(price, amount) {
-      return (price * amount).toFixed(4);
+      return (price * amount).toFixed(6);
     },
   },
 };
@@ -102,6 +102,11 @@ export default {
 
     &:not(:first-child) {
       border-left: 1px solid var(--color-primary);
+    }
+
+    &:last-child {
+      justify-content: flex-end;
+      padding-right: 16px;
     }
   }
 

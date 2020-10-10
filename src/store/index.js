@@ -10,7 +10,7 @@ export default new Vuex.Store({
 
   state: {
     active_symbol: "BTCUSDT",
-    bids: [],
+    diffs: [],
   },
 
   getters: {
@@ -22,15 +22,18 @@ export default new Vuex.Store({
       state.active_symbol = symbol;
     },
 
-    add_bids(state, bids) {
-      console.log("commit", bids);
-      state.bids.unshift(...bids);
+    add_diff(state, diff) {
+      state.diffs.unshift(diff);
     },
   },
 
   actions: {
     select_symbol({ commit }, symbol) {
       commit("select_symbol", symbol);
+    },
+
+    add_diff({ commit }, diff) {
+      commit("add_diff", diff);
     },
   },
 
