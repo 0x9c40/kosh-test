@@ -31,6 +31,26 @@ export default {
     ...mapGetters(["stream_name"]),
   },
 
+  watch: {
+    async active_symbol(new_val, old_val) {
+      const all_orders = await Vue.binance_fetch_order_book({ symbol: this.active_symbol });
+      this.bids = all_orders.bids;
+      this.asks = all_orders.asks;
+
+      this.binance_ws.close();
+
+      this.binance_ws = Vue.binance_make_ws(this.stream_name);
+
+      this.binance_ws.onmessage = ({ data }) => {
+        let { b: bids, a: asks } = JSON.parse(data);
+        bids = bids.filter((bid) => +bid[1] !== 0);
+        asks = asks.filter((ask) => +ask[1] !== 0);
+        this.bids.unshift(...bids);
+        this.asks.unshift(...asks);
+      };
+    },
+  },
+
   async beforeMount() {
     const all_orders = await Vue.binance_fetch_order_book({ symbol: this.active_symbol });
     this.bids = all_orders.bids;
@@ -52,8 +72,13 @@ export default {
 <style lang="scss">
 .order-book-view {
   display: flex;
-  justify-content: space-between;
-  padding: 24px;
+  padding: 24px 0px;
   height: calc(100vh - var(--header-height));
+  max-height: calc(100vh - var(--header-height));
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    padding: 12px 0px;
+  }
 }
 </style>

@@ -10,11 +10,11 @@
       </div>
       <!-- <div @click="stop">Остановить</div> -->
     </div>
-    <keep-alive>
-      <div class="container">
+    <div class="container">
+      <keep-alive>
         <router-view />
-      </div>
-    </keep-alive>
+      </keep-alive>
+    </div>
   </div>
 </template>
 
@@ -56,7 +56,8 @@ body {
 
 .header {
   height: var(--header-height);
-  border-bottom: 2px solid red;
+  border-bottom: 1px solid red;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
 }
 
 .header-container {
@@ -70,9 +71,8 @@ body {
   background-color: var(--color-primary);
   color: white;
   height: 32px;
-  width: 100px;
+  padding: 0px 10px;
   text-decoration: none;
-  margin-left: 32px;
   align-items: center;
   justify-content: center;
   display: flex;
@@ -81,6 +81,10 @@ body {
   transition: box-shadow 0.1s;
   box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
   font-weight: bold;
+
+  &:not(:first-child) {
+    margin-left: 32px;
+  }
 
   &:hover {
     background-color: var(--color-secondary);

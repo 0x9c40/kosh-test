@@ -11,7 +11,7 @@
     <div class="order-table__content">
       <div v-for="(order, index) in orders" :key="index" class="order-table__row">
         <div class="order-table__cell">{{ order[1] }}</div>
-        <div class="order-table__cell">{{ Number(order[0]).toFixed(2) }}</div>
+        <div class="order-table__cell">{{ order[0] }}</div>
         <div class="order-table__cell">{{ total(...order) }}</div>
       </div>
     </div>
@@ -49,8 +49,13 @@ export default {
 <style lang="scss">
 .order-table {
   width: 100%;
-  max-width: 480px;
+  height: 100%;
+  max-width: 450px;
   border: 1px solid var(--color-primary);
+
+  &:not(:last-child) {
+    margin-right: 32px;
+  }
 
   &:hover {
     .order-table__content {
@@ -100,12 +105,17 @@ export default {
     }
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 960px) {
     &__cell {
       &:last-child {
         display: none;
       }
     }
+  }
+
+  @media (max-width: 640px) {
+    max-width: 320px;
+    height: 50%;
   }
 }
 </style>
