@@ -12,7 +12,7 @@
       <div v-for="(order, index) in orders" :key="index" class="order-table__row">
         <div class="order-table__cell">{{ order[1] }}</div>
         <div class="order-table__cell">{{ Number(order[0]).toFixed(2) }}</div>
-        <div class="order-table__cell">{{ Number(order[0] * order[1]).toFixed(4) }}</div>
+        <div class="order-table__cell">{{ total(...order) }}</div>
       </div>
     </div>
   </div>
@@ -36,6 +36,12 @@ export default {
 
   data() {
     return {};
+  },
+
+  methods: {
+    total(price, amount) {
+      return (price * amount).toFixed(4);
+    },
   },
 };
 </script>
@@ -74,7 +80,7 @@ export default {
 
   &__content {
     overflow-y: hidden;
-    height: calc(100vh - var(--header-height) - 48px - 2px);
+    height: calc(100% - 48px); //head and column_names subtructed
   }
 
   &__row {
@@ -84,13 +90,21 @@ export default {
 
   &__cell {
     flex: 1;
-    padding-left: 16px;
+    padding-left: 6px;
     height: 24px;
     display: flex;
     align-items: center;
 
     &:not(:first-child) {
       border-left: 1px solid var(--color-primary);
+    }
+  }
+
+  @media (max-width: 1200px) {
+    &__cell {
+      &:last-child {
+        display: none;
+      }
     }
   }
 }

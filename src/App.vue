@@ -1,13 +1,19 @@
 <template>
   <div id="app">
     <div class="header">
-      <div class="selected-symbol">{{ active_symbol }}</div>
-      <router-link to="/" class="header-button">Data</router-link>
-      <router-link to="/select" class="header-button">Select</router-link>
+      <div class="container">
+        <div class="header-container">
+          <div class="selected-symbol">{{ active_symbol }}</div>
+          <router-link to="/" class="header-button">Data</router-link>
+          <router-link to="/select" class="header-button">Select</router-link>
+        </div>
+      </div>
       <!-- <div @click="stop">Остановить</div> -->
     </div>
     <keep-alive>
-      <router-view />
+      <div class="container">
+        <router-view />
+      </div>
     </keep-alive>
   </div>
 </template>
@@ -49,11 +55,14 @@ body {
 }
 
 .header {
-  display: flex;
-  align-items: center;
   height: var(--header-height);
   border-bottom: 2px solid red;
-  // margin-bottom: 24px;
+}
+
+.header-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .header-button,
@@ -82,5 +91,24 @@ body {
 .selected-symbol {
   background-color: var(--color-secondary);
   box-shadow: none;
+}
+
+.container {
+  display: block;
+  width: 1200px;
+  height: 100%;
+  margin: auto;
+
+  @media (max-width: 1200px) {
+    width: 960px;
+  }
+
+  @media (max-width: 960px) {
+    width: 640px;
+  }
+
+  @media (max-width: 640px) {
+    width: 320px;
+  }
 }
 </style>

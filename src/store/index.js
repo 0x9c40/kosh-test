@@ -13,6 +13,10 @@ export default new Vuex.Store({
     bids: [],
   },
 
+  getters: {
+    stream_name: (state) => `${state.active_symbol.toLowerCase()}@depth`,
+  },
+
   mutations: {
     select_symbol(state, symbol) {
       state.active_symbol = symbol;

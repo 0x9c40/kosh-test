@@ -1,13 +1,14 @@
 <template>
-  <div class="home">
+  <div class="order-book-view">
     <OrderTable :orders="bids" name="Bids" />
-    <div @click="ws.close()" class="close">stop</div>
+    <OrderTable :orders="asks" name="Asks" />
+    <div @click="binance_ws.close()" class="close">stop</div>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
-import { mapState, mapMutations, mapActions } from "vuex";
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
 import OrderTable from "../components/OrderTable.vue";
 
 export default {
@@ -21,25 +22,38 @@ export default {
     return {
       bids: [],
       asks: [],
-      ws: "",
+      binance_ws: "",
     };
   },
 
   computed: {
     ...mapState({ active_symbol: (state) => state.active_symbol }),
+    ...mapGetters(["stream_name"]),
   },
 
-  async beforeCreate() {
-    const all_orders = await Vue.binance_fetch_order_book({});
+  async beforeMount() {
+    const all_orders = await Vue.binance_fetch_order_book({ symbol: this.active_symbol });
     this.bids = all_orders.bids;
+    this.asks = all_orders.asks;
 
-    this.ws = Vue.binance_ws_connect("btcusdt@depth", this);
+    this.binance_ws = Vue.binance_make_ws(this.stream_name);
+
+    this.binance_ws.onmessage = ({ data }) => {
+      let { b: bids, a: asks } = JSON.parse(data);
+      bids = bids.filter((bid) => +bid[1] !== 0);
+      asks = asks.filter((ask) => +ask[1] !== 0);
+      this.bids.unshift(...bids);
+      this.asks.unshift(...asks);
+    };
   },
 };
 </script>
 
 <style lang="scss">
-.home {
+.order-book-view {
   display: flex;
+  justify-content: space-between;
+  padding: 24px;
+  height: calc(100vh - var(--header-height));
 }
 </style>
