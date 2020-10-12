@@ -14,6 +14,8 @@ import merge from "lodash/merge";
 import omitBy from "lodash/omitBy";
 import toPairs from "lodash/toPairs";
 import sortBy from "lodash/sortBy";
+import findIndex from "lodash/findIndex";
+import sortedIndexBy from "lodash/sortedIndexBy";
 import { mapState, mapGetters, mapActions } from "vuex";
 import OrderTable from "../components/OrderTable.vue";
 
@@ -28,13 +30,12 @@ export default {
     return {
       bids: [],
       asks: [],
-      lastUpdateId: undefined,
+      last_update_id: undefined,
       binance_ws: "",
-      events_buffer: [],
+      init_events_buffer: [],
       guard: false,
-      order_book_patch: {},
-      is_order_book_initialized: false,
-      current_depth_update: undefined,
+      order_book_initialized: false,
+      last_diff: undefined,
     };
   },
 
@@ -46,12 +47,10 @@ export default {
   watch: {
     async active_symbol(new_val, old_val) {},
 
-    current_depth_update(new_update) {
-      if (!this.is_order_book_initialized) return;
-      let bids_obj = fromPairs(this.bids);
-      merge(bids_obj, fromPairs(new_update.b));
-      bids_obj = omitBy(bids_obj, (val) => +val === 0);
-      this.bids = sortBy(toPairs(bids_obj), (item) => +item[0]).reverse();
+    last_diff({ b: bids_patches, a: asks_patches }) {
+      if (!this.order_book_initialized) return;
+      bids_patches.forEach((patch) => this.apply_patch(patch, "bids"));
+      asks_patches.forEach((patch) => this.apply_patch(patch, "asks"));
     },
   },
 
@@ -60,33 +59,56 @@ export default {
 
     this.binance_ws.onmessage = async ({ data: data_string }) => {
       let data = JSON.parse(data_string);
-      if (!this.is_order_book_initialized) this.events_buffer.push(data);
-      this.current_depth_update = data;
+      if (!this.order_book_initialized) this.init_events_buffer.push(data);
+      this.last_diff = data;
 
       if (this.guard) return;
       this.guard = true;
 
-      let all_orders = await Vue.binance_fetch_order_book({ symbol: this.active_symbol, limit: 10 });
+      let { bids, asks, lastUpdateId: last_update_id } = await Vue.binance_fetch_order_book({ symbol: this.active_symbol, limit: 10 });
 
-      this.bids = all_orders.bids;
-      this.asks = all_orders.asks;
-      this.lastUpdateId = all_orders.lastUpdateId;
+      this.bids = cloneDeep(bids); // why do I need to do this?
+      this.asks = asks;
+      this.last_update_id = last_update_id;
 
-      remove(this.events_buffer, (event) => event.u <= all_orders.lastUpdateId);
+      remove(this.init_events_buffer, (event) => event.u <= last_update_id);
 
-      this.events_buffer.forEach((event) => {
-        let bids_obj = merge(fromPairs(this.bids), fromPairs(event.b));
-        this.bids = toPairs(bids_obj);
-        let asks_obj = merge(fromPairs(this.asks), fromPairs(event.a));
-        this.asks = toPairs(asks_obj);
+      this.init_events_buffer.forEach(({ b: bids_patches, a: asks_patches }) => {
+        bids_patches.forEach((patch) => this.apply_patch(patch, "bids"));
+        asks_patches.forEach((patch) => this.apply_patch(patch, "asks"));
       });
 
-      this.is_order_book_initialized = true;
+      this.order_book_initialized = true;
     };
   },
 
   methods: {
     ...mapActions(["add_diff"]),
+
+    apply_patch(patch, order_type) {
+      let [patch_price, patch_amount] = patch;
+      let index = findIndex(this[order_type], ([order_price]) => order_price === patch_price);
+
+      let found = index !== -1;
+      let need_to_remove = +patch_amount === 0;
+
+      if (!found && need_to_remove) return;
+      if (found && need_to_remove) {
+        this[order_type].splice(index, 1);
+      }
+      if (!found && !need_to_remove) {
+        let sorted_index;
+        if (order_type === "bids") {
+          sorted_index = this[order_type].length - sortedIndexBy(cloneDeep(this[order_type]).reverse(), patch, (o) => +o[0]);
+        } else {
+          sorted_index = sortedIndexBy(this[order_type], patch, (o) => +o[0]);
+        }
+        this[order_type].splice(sorted_index, 0, patch);
+      }
+      if (found && !need_to_remove) {
+        this[order_type].splice(index, 1, patch);
+      }
+    },
   },
 };
 </script>
