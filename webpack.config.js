@@ -8,7 +8,8 @@ module.exports = ({ mode = "production" }) => {
   return {
     mode,
     output: {
-      path: path.resolve(__dirname, "docs"),
+      path: path.resolve(__dirname),
+      publicPath: "/kosh-test/",
     },
     module: {
       rules: [
