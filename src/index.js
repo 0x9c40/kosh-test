@@ -15,6 +15,7 @@ mounting_point.id = "app";
 document.body.appendChild(mounting_point);
 
 Vue.config.productionTip = false;
+Vue.config.devtools = true;
 
 new Vue({
   store,

@@ -1,5 +1,6 @@
 <template>
-  <div class="order-book-view" @click="binance_ws.close()">
+  <!-- <div class="order-book-view" @click="binance_ws.close()"> -->
+  <div class="order-book-view">
     <OrderTable :orders="bids" name="Bids" />
     <OrderTable :orders="asks" name="Asks" />
   </div>
@@ -42,7 +43,9 @@ export default {
   },
 
   watch: {
-    async active_symbol(new_val, old_val) {},
+    active_symbol() {
+      this.load_stream(this.stream_name, true);
+    },
 
     last_diff({ b: bids_patches, a: asks_patches, ...rest }) {
       if (!this.order_book_initialized) return;
@@ -53,35 +56,48 @@ export default {
   },
 
   async beforeMount() {
-    this.binance_ws = Vue.binance_make_ws(this.stream_name);
-
-    this.binance_ws.onmessage = async ({ data: data_string }) => {
-      let data = JSON.parse(data_string);
-      if (!this.order_book_initialized) this.init_events_buffer.push(data);
-      this.last_diff = data;
-
-      if (this.guard) return;
-      this.guard = true;
-
-      let { bids, asks, lastUpdateId: last_update_id } = await Vue.binance_fetch_order_book({ symbol: this.active_symbol, limit: 10 });
-
-      this.bids = cloneDeep(bids); // why do I need to do this?
-      this.asks = asks;
-      this.last_update_id = last_update_id;
-
-      remove(this.init_events_buffer, (event) => event.u <= last_update_id);
-
-      this.init_events_buffer.forEach(({ b: bids_patches, a: asks_patches }) => {
-        bids_patches.forEach((patch) => this.apply_patch(patch, "bids"));
-        asks_patches.forEach((patch) => this.apply_patch(patch, "asks"));
-      });
-
-      this.order_book_initialized = true;
-    };
+    console.log("before", this.stream_name);
+    this.load_stream(this.stream_name);
   },
 
   methods: {
     ...mapActions(["add_diff"]),
+
+    load_stream(name, reset) {
+      if (reset) {
+        console.log("drop", name);
+        this.binance_ws.close();
+        this.guard = false;
+        this.bids = [];
+        this.asks = [];
+      }
+
+      this.binance_ws = Vue.binance_make_ws(name);
+
+      this.binance_ws.onmessage = async ({ data: data_string }) => {
+        let data = JSON.parse(data_string);
+        if (!this.order_book_initialized) this.init_events_buffer.push(data);
+        this.last_diff = data;
+
+        if (this.guard) return;
+        this.guard = true;
+
+        let { bids, asks, lastUpdateId: last_update_id } = await Vue.binance_fetch_order_book({ symbol: this.active_symbol, limit: 10 });
+
+        this.bids = cloneDeep(bids); // why do I need to do this?
+        this.asks = asks;
+        this.last_update_id = last_update_id;
+
+        remove(this.init_events_buffer, (event) => event.u <= last_update_id);
+
+        this.init_events_buffer.forEach(({ b: bids_patches, a: asks_patches }) => {
+          bids_patches.forEach((patch) => this.apply_patch(patch, "bids"));
+          asks_patches.forEach((patch) => this.apply_patch(patch, "asks"));
+        });
+
+        this.order_book_initialized = true;
+      };
+    },
 
     apply_patch(patch, order_type) {
       let [patch_price, patch_amount] = patch;
