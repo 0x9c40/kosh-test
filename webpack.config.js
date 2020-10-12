@@ -1,3 +1,5 @@
+const path = require("path");
+
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const webpack = require("webpack");
@@ -5,6 +7,9 @@ const webpack = require("webpack");
 module.exports = ({ mode = "production" }) => {
   return {
     mode,
+    output: {
+      path: path.resolve(__dirname, "docs"),
+    },
     module: {
       rules: [
         {
