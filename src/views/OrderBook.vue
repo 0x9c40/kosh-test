@@ -80,7 +80,7 @@ export default {
         if (this.guard) return;
         this.guard = true;
 
-        let { bids, asks, lastUpdateId: last_update_id } = await Vue.binance_fetch_order_book({ symbol: this.active_symbol, limit: 10 });
+        let { bids, asks, lastUpdateId: last_update_id } = await Vue.binance_fetch_order_book({ symbol: this.active_symbol, limit: 500 });
 
         this.bids = cloneDeep(bids); // why do I need to do this?
         this.asks = asks;
