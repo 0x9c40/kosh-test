@@ -11,6 +11,7 @@ export default new Vuex.Store({
   state: {
     active_symbol: "BTCUSDT",
     diffs: [],
+    events_buffer: [],
   },
 
   getters: {

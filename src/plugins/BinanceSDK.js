@@ -6,6 +6,7 @@ export default {
       const entry_point = `https://www.binance.com/api/v1/depth?symbol=${symbol}&limit=${limit}`;
       const response = await fetch(entry_point);
       const data = await response.json();
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       return data;
     };
 

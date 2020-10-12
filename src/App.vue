@@ -8,7 +8,6 @@
           <router-link to="/select" class="header-button">Select</router-link>
         </div>
       </div>
-      <!-- <div @click="stop">Остановить</div> -->
     </div>
     <div class="container">
       <keep-alive>
@@ -22,20 +21,10 @@
 import { mapState } from "vuex";
 
 export default {
-  data() {
-    return {
-      msg: "hi",
-    };
-  },
-
   computed: {
     ...mapState({
       active_symbol: (state) => state.active_symbol,
     }),
-  },
-
-  methods: {
-    stop() {},
   },
 };
 </script>

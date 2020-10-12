@@ -25,6 +25,10 @@
           <div class="diff-prop__name">Asks:</div>
           <div class="diff-prop__value">{{ diff.a.length }}</div>
         </div>
+        <div class="diff-prop">
+          <div class="diff-prop__name">Event time:</div>
+          <div class="diff-prop__value">{{ diff.E }}</div>
+        </div>
       </li>
     </ul>
   </div>

@@ -10,8 +10,8 @@
     </div>
     <div class="order-table__content">
       <div v-for="(order, index) in orders" :key="index" class="order-table__row">
-        <div class="order-table__cell">{{ order[1] }}</div>
-        <div class="order-table__cell">{{ order[0] }}</div>
+        <div class="order-table__cell">{{ +order[1] }}</div>
+        <div class="order-table__cell">{{ +order[0] }}</div>
         <div class="order-table__cell">{{ total(...order) }}</div>
       </div>
     </div>
