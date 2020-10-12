@@ -4,7 +4,7 @@
       <div class="container">
         <div class="header-container">
           <div class="selected-symbol">{{ active_symbol }}</div>
-          <router-link to="/" class="header-button">Data</router-link>
+          <router-link to="/kosh-test" class="header-button">Data</router-link>
           <router-link to="/select" class="header-button">Select</router-link>
         </div>
       </div>
