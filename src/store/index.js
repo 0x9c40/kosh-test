@@ -1,13 +1,9 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-// import createPersistedState from "vuex-persistedstate";
-
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  // plugins: [createPersistedState()],
-
   state: {
     active_symbol: "BTCUSDT",
     diffs: [],
@@ -36,6 +32,4 @@ export default new Vuex.Store({
       commit("add_diff", diff);
     },
   },
-
-  modules: {},
 });

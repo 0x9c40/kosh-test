@@ -7,16 +7,13 @@
 
 <script>
 import Vue from "vue";
+import { mapState, mapGetters, mapActions } from "vuex";
+
 import remove from "lodash/remove";
-import fromPairs from "lodash/fromPairs";
 import cloneDeep from "lodash/cloneDeep";
-import merge from "lodash/merge";
-import omitBy from "lodash/omitBy";
-import toPairs from "lodash/toPairs";
-import sortBy from "lodash/sortBy";
 import findIndex from "lodash/findIndex";
 import sortedIndexBy from "lodash/sortedIndexBy";
-import { mapState, mapGetters, mapActions } from "vuex";
+
 import OrderTable from "../components/OrderTable.vue";
 
 export default {
@@ -47,10 +44,11 @@ export default {
   watch: {
     async active_symbol(new_val, old_val) {},
 
-    last_diff({ b: bids_patches, a: asks_patches }) {
+    last_diff({ b: bids_patches, a: asks_patches, ...rest }) {
       if (!this.order_book_initialized) return;
       bids_patches.forEach((patch) => this.apply_patch(patch, "bids"));
       asks_patches.forEach((patch) => this.apply_patch(patch, "asks"));
+      this.add_diff({ b: bids_patches, a: asks_patches, ...rest });
     },
   },
 
