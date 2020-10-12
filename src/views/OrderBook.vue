@@ -1,6 +1,5 @@
 <template>
-  <!-- <div class="order-book-view" @click="binance_ws.close()"> -->
-  <div class="order-book-view">
+  <div class="order-book-view" @click="binance_ws.close()">
     <OrderTable :orders="bids" name="Bids" />
     <OrderTable :orders="asks" name="Asks" />
   </div>
@@ -65,7 +64,6 @@ export default {
 
     load_stream(name, reset) {
       if (reset) {
-        console.log("drop", name);
         this.binance_ws.close();
         this.guard = false;
         this.bids = [];
